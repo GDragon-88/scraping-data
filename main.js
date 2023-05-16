@@ -23,9 +23,9 @@ chromium.launch({ headless: false }).then(async (browser) => {
 
     await page.getByLabel("Password").fill("D6i7vcZG");
 
-    let res = await page.solveRecaptchas();
+    await page.solveRecaptchas();
 
-    console.log(res);
+    
 
     await page.waitForTimeout(5000);
 
@@ -41,31 +41,17 @@ chromium.launch({ headless: false }).then(async (browser) => {
 
     await page.getByText("Rebate Report").click();
 
-//   await page.fill(".Form-data > .search-account > .el-input__inner", "522273")
-    
-   
-await page.$$eval('input[type="text"]', (elements, value) => {
-    elements.forEach(async (element,i) => {
-        console.log(element)
-     if(i==2){
-        element.focus()
-        element.setAttribute("placeholder" ,"chien")
-      
-     }
-    });
-  }, '522273')
+   await page.getByRole("textbox").first().fill("522273")
 
-  const input = page.$('input[placeholder="chien"]')
-  await input.type('0321')
-    await page.click('button:is(:text("APPLY"))')
+
+
+    await page.click('button:is(:text("APPLY"))')   
+
+    await page.waitForTimeout(5000)
    
 
-    
-    
-    // console.log(inputLocator)
-//  (await page.waitForSelector("input[class='el-input__inner']"))
-    
-//    await  page.getByLabel("Enter Trading Account").fill('255158')
+    await page.getByText("Request History").click()
+
     await page.screenshot({ path: "scrapingant.png" })
 
     // await browser.close()
@@ -76,4 +62,5 @@ await page.$$eval('input[type="text"]', (elements, value) => {
 
 app.listen(PORT, () => {
   console.log(PORT);
-});
+})
+   
