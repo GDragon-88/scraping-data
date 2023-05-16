@@ -5,9 +5,10 @@ const PORT = 3002
 
 
 
-const puppeteer = require('puppeteer-extra')
+ const { chromium }  = require('playwright-extra')
+
 const RecaptchaPlugin = require('puppeteer-extra-plugin-recaptcha')
-puppeteer.use(
+chromium.use(
     RecaptchaPlugin({
         provider: {
             id: '2captcha',
@@ -17,41 +18,42 @@ puppeteer.use(
         visualFeedback: true // colorize reCAPTCHAs (violet = detected, green = solved)
     })
 )
-puppeteer.launch({ headless: true }).then(async browser => {
+chromium.launch({ headless: false }).then(async browser => {
     try {
         const page = await browser.newPage()
         await page.goto('https://portal.threetrader.com/login')
-
-
-        // const setInputValue = ()=>{
-        //  document.querySelector("input").value ="broker@p2t.sg"
-        //  document.querySelector("input")[1].value ="D6i7vcZG"
-        //  console.log(2);
-
-        // }
-        // console.log(1);
-        // await page.evaluate(setInputValue)
-        let inputHandles = await page.evaluate(async () => {
-            const inputs = Array.from(document.getElementsByClassName("q-placeholder"))
-            return inputs.map(i => i.value)
-        })
-        console.log(inputHandles);
-
-        const inputValue = ["broker@p2t.sg", "D6i7vcZG"]
-        for (let i in inputHandles) {
-
-            await page.type(".q-placeholder", inputValue)
-        }
-        
-        let res = await page.solveRecaptchas()
-
-        console.log(res);
        
 
+        await page.getByLabel("email").fill("broker@p2t.sg")
+      
+        await page.getByLabel("Password").fill("D6i7vcZG")
+  
+        
+
+        
+        
+        
+     let res =  await page.solveRecaptchas()
+        
+
+    
+       console.log(res);
+       
+       await page.waitForTimeout(5000);
+
+       await page.click('button:is(:text("LOGIN"))')
+
+       
+       const navigationPromise = page.waitForNavigation()
+        
+
+       await navigationPromise
+       
+       await page.screenshot({ path: 'scrapingant.png' })
 
 
 
-        await browser.close()
+        // await browser.close()
     } catch (error) {
         console.log(error);
     }
